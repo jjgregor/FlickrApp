@@ -1,9 +1,9 @@
 package com.jason.flickr.services
 
 import com.jason.flickr.models.JsonFlickrFeed
+import io.reactivex.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Query
-import rx.Observable
 
 
 /**
@@ -12,6 +12,6 @@ import rx.Observable
 interface FlickrService {
 
     @GET("services/feeds/photos_public.gne?format=json&nojsoncallback=1")
-    fun getPhotos(@Query("text") tags: String?): Observable<JsonFlickrFeed>
+    fun getPhotos(@Query("text") tags: String?): Flowable<JsonFlickrFeed>
 
 }

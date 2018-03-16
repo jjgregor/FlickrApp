@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         progress_bar.visibility = View.VISIBLE
 
         viewModel.getFeed().subscribe({ response ->
-            response?.items?.let {
+            response.items?.let {
                 viewModel.items = it
                 adapter.updateData(it)
                 bindItems()
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        val TAG = MainActivity::class.java.name
+        val TAG: String = MainActivity::class.java.name
     }
 
 }

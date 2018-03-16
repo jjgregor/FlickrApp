@@ -4,6 +4,7 @@ package com.jason.flickr.dagger
 import android.app.Application
 import android.content.Context
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import com.jason.flickr.BuildConfig
 import com.jason.flickr.util.ObjectMapperFactory
 import dagger.Module
@@ -11,7 +12,6 @@ import dagger.Provides
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 import javax.inject.Singleton
 
@@ -47,7 +47,7 @@ class NetworkModule(private val baseUrl: String, internal val context: Context) 
     internal fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder().baseUrl(baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory().getObjectMapper()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(client)
                 .build()
     }

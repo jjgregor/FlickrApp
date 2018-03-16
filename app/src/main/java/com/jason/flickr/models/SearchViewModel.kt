@@ -4,9 +4,9 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import com.jason.flickr.App
 import com.jason.flickr.services.FlickrService
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -24,7 +24,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         (application as App).getAppComponent().inject(this)
     }
 
-    fun getFeed() : Observable<JsonFlickrFeed> {
+    fun getFeed() : Flowable<JsonFlickrFeed> {
         return  service.getPhotos(searchQuery)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
