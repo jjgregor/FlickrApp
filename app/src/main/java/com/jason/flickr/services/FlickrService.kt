@@ -12,6 +12,6 @@ import rx.Observable
 interface FlickrService {
 
     @GET("services/feeds/photos_public.gne?format=json&nojsoncallback=1")
-    fun getPhotos(@Query("tags") tags: String?): Observable<JsonFlickrFeed>
+    fun getPhotos(@Query("text") tags: String?): Observable<JsonFlickrFeed>
 
 }

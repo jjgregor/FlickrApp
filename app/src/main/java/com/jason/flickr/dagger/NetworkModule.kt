@@ -3,6 +3,8 @@ package com.jason.flickr.dagger
 
 import android.app.Application
 import android.content.Context
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.jason.flickr.BuildConfig
 import com.jason.flickr.util.ObjectMapperFactory
 import dagger.Module
 import dagger.Provides
@@ -30,6 +32,12 @@ class NetworkModule(private val baseUrl: String, internal val context: Context) 
     @Singleton
     internal fun provideOkHttpClient(cache: Cache): OkHttpClient {
         return OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val ongoing = chain.request().newBuilder()
+                    ongoing.addHeader("api_key", "3a4e049045a2705d2070931771b996d9")
+                    chain.proceed(ongoing.build())
+                }
+                .addNetworkInterceptor(if (BuildConfig.DEBUG) StethoInterceptor() else null)
                 .cache(cache)
                 .build()
     }

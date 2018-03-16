@@ -9,4 +9,7 @@
     <string name="about">About</string>
     <string name="help">Help</string>
 
+    <string name="error_loading_images">An error has occurred while, please try again.</string>
+    <string name="search_question">Search for images!</string>
+
 </resources>

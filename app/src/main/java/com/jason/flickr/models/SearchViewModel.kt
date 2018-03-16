@@ -15,8 +15,8 @@ import javax.inject.Inject
  */
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
-    var items = ArrayList<FlickrItems>()
-    var tags: String = ""
+    var items = ArrayList<FlickrItem>()
+    var searchQuery: String = ""
 
     @Inject lateinit var service: FlickrService
 
@@ -25,13 +25,9 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun getFeed() : Observable<JsonFlickrFeed> {
-        return  service.getPhotos(getFormattedTags(tags))
+        return  service.getPhotos(searchQuery)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    private fun getFormattedTags(tags: String): String? {
-        return tags.replace(" ", ",")
     }
 
 }
