@@ -73,6 +73,10 @@ class MainActivity : AppCompatActivity() {
             } ?: onError(null)
         }, { t: Throwable? -> onError(t) })
 
+        if(swipe_refresh.isRefreshing) {
+            swipe_refresh.isRefreshing = false
+        }
+
     }
 
     private fun bindItems() {
