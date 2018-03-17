@@ -1,10 +1,12 @@
 package com.jason.flickr
 
 import android.app.Application
+import android.arch.persistence.room.Room
 import com.jason.flickr.dagger.AppComponent
 import com.jason.flickr.dagger.AppModule
 import com.jason.flickr.dagger.DaggerAppComponent
 import com.jason.flickr.dagger.NetworkModule
+import com.jason.flickr.db.FlickrFeedDB
 
 /**
  * Created by Jason on 3/4/18.
@@ -16,6 +18,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        database = Room.databaseBuilder(this, FlickrFeedDB::class.java, "flickr-feed-db").build()
+
         component = DaggerAppComponent
                 .builder()
                 .appModule(AppModule(this))
@@ -24,5 +28,9 @@ class App : Application() {
     }
 
     fun getAppComponent(): AppComponent = component
+
+    companion object {
+        var database: FlickrFeedDB? = null
+    }
 
 }

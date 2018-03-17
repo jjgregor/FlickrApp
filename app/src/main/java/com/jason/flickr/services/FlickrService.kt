@@ -12,6 +12,6 @@ import retrofit2.http.Query
 interface FlickrService {
 
     @GET("services/feeds/photos_public.gne?format=json&nojsoncallback=1")
-    fun getPhotos(@Query("text") tags: String?): Flowable<JsonFlickrFeed>
+    fun getPhotos(@Query("tags") tag: String?): Flowable<JsonFlickrFeed>
 
 }
