@@ -1,10 +1,7 @@
 package com.jason.flickr.db
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Delete
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
-import com.jason.flickr.models.FlickrItem
+import android.arch.persistence.room.*
+import com.jason.flickr.models.JsonFlickrFeed
 import io.reactivex.Flowable
 
 /**
@@ -15,12 +12,15 @@ import io.reactivex.Flowable
 interface FlickrFeedDao {
 
     @Query("SELECT * FROM flickr_item_table")
-    fun getAllItems(): Flowable<List<FlickrItem>>
+    fun getAllItems(): Flowable<JsonFlickrFeed>
 
-    @Insert
-    fun insert(item: FlickrItem)
+    @Query("SELECT * FROM flickr_item_table WHERE query = :query")
+    fun getItemsAt(query: String): Flowable<JsonFlickrFeed>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(item: JsonFlickrFeed)
 
     @Delete
-    fun delete(item: FlickrItem)
+    fun delete(item: JsonFlickrFeed)
 
 }

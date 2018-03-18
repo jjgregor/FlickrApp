@@ -1,33 +1,28 @@
 package com.jason.flickr.models
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.ViewModel
 import com.jason.flickr.App
-import com.jason.flickr.services.FlickrService
+import com.jason.flickr.db.FeedRepository
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
 /**
  * Created by Jason on 3/7/18.
  */
-class SearchViewModel(application: Application) : AndroidViewModel(application) {
+class SearchViewModel : ViewModel() {
+
+    @Inject lateinit var repo: FeedRepository
+
+    init {
+        App.component.inject(this)
+    }
 
     var items = ArrayList<FlickrItem>()
     var searchQuery: String = ""
 
-    @Inject lateinit var service: FlickrService
+    fun getFeedFromApi(): Flowable<JsonFlickrFeed> = repo.getUsersFromApi(searchQuery)
 
-    init {
-        (application as App).getAppComponent().inject(this)
-    }
-
-    fun getFeed() : Flowable<JsonFlickrFeed> {
-        return  service.getPhotos(searchQuery)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
+    fun getFeedFromDb(): Flowable<JsonFlickrFeed> = repo.getUsersFromDb(searchQuery)
 
 }

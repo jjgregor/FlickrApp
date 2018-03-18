@@ -5,6 +5,7 @@ import android.app.SearchManager
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -18,6 +19,8 @@ import com.jason.flickr.App
 import com.jason.flickr.R
 import com.jason.flickr.adapters.PhotosAdapter
 import com.jason.flickr.models.SearchViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -63,17 +66,24 @@ class MainActivity : AppCompatActivity() {
             search_question.visibility = View.GONE
         }
 
+        recycler_view.visibility = View.GONE
         progress_bar.visibility = View.VISIBLE
 
-        viewModel.getFeed().subscribe({ response ->
-            response.items?.let {
-                viewModel.items = it
-                adapter.updateData(it)
-                bindItems()
-            } ?: onError(null)
-        }, { t: Throwable? -> onError(t) })
+        val feed = if (isNetworkAvailable()) viewModel.getFeedFromApi() else viewModel.getFeedFromDb()
 
-        if(swipe_refresh.isRefreshing) {
+        feed.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    if (response.items.isEmpty()) {
+                        onError(null)
+                    } else {
+                        viewModel.items = response.items
+                        adapter.updateData(response.items)
+                        bindItems()
+                    }
+                }, { t: Throwable? -> onError(t) })
+
+        if (swipe_refresh.isRefreshing) {
             swipe_refresh.isRefreshing = false
         }
 
@@ -85,6 +95,11 @@ class MainActivity : AppCompatActivity() {
         recycler_view.layoutManager = GridLayoutManager(this, 2)
         recycler_view.adapter = adapter
         recycler_view.visibility = View.VISIBLE
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+        return connectivityManager?.activeNetworkInfo?.isConnected == true
     }
 
     private fun onError(t: Throwable?) {
