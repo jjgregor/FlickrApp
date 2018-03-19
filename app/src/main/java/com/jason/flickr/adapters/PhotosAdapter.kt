@@ -33,12 +33,18 @@ class PhotosAdapter(private val items: ArrayList<FlickrItem>) : RecyclerView.Ada
         notifyDataSetChanged()
     }
 
+    fun removeItem(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, items.size)
+    }
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bindItem(item: FlickrItem) {
             with(item){
                 Glide.with(itemView.context)
-                        .load(media?.m)
+                        .load(media.m)
                         .apply(RequestOptions()
                                 .centerCrop()
                                 .diskCacheStrategy(DiskCacheStrategy.ALL))
